@@ -9,6 +9,7 @@ import { Message } from '@/lib/types';
 export default function ChatPage() {
   const [mensajes, setMensajes] = useState<Message[]>([]);
   const [cargando, setCargando] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Cargar historial de localStorage al iniciar
@@ -142,63 +143,108 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">
-            💬 Chat del Workspace
-          </h1>
-          <p className="text-sm text-gray-600">
-            Pregunta sobre tus documentos legales
-          </p>
+    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-50 to-purple-50">
+      {/* Header con degradado y mejorado */}
+      <div className="bg-gradient-to-r from-[#7762a3] via-[#8b75b8] to-[#9b87c9] border-b border-purple-300/30 px-4 py-3 flex justify-between items-center shadow-lg">
+        <div className="flex items-center gap-3">
+          {/* Logo/Icono */}
+          <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+            <span className="text-lg">✨</span>
+          </div>
+          <div>
+            <h1 className="text-base font-bold text-white flex items-center gap-2">
+              FastAI
+            </h1>
+            <p className="text-xs text-purple-100">
+              Tu asistente de documentos legales
+            </p>
+          </div>
         </div>
-        <button
-          onClick={limpiarChat}
-          className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          🗑️ Limpiar chat
-        </button>
+        
+        <div className="flex items-center gap-2">
+          {/* Botón minimizar/expandir */}
+          <button
+            onClick={() => setIsMinimized(!isMinimized)}
+            className="p-2 text-white hover:bg-white/20 rounded-lg transition-colors"
+            title={isMinimized ? "Expandir" : "Minimizar"}
+          >
+            {isMinimized ? (
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+              </svg>
+            )}
+          </button>
+          
+          {/* Botón limpiar */}
+          <button
+            onClick={limpiarChat}
+            className="px-3 py-1.5 text-xs text-white hover:bg-white/20 rounded-lg transition-colors flex items-center gap-1"
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            Limpiar
+          </button>
+        </div>
       </div>
 
       {/* Mensajes */}
-      <div className="flex-1 overflow-y-auto px-6 py-4">
-        {mensajes.length === 0 ? (
-          <div className="h-full flex items-center justify-center">
-            <div className="text-center max-w-md">
-              <div className="text-6xl mb-4">💼</div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                Bienvenido al Chat del Workspace
-              </h2>
-              <p className="text-gray-600 mb-6">
-                Pregunta sobre tus documentos, búscalos por tema, o solicita
-                comparaciones entre ellos.
-              </p>
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-left">
-                <p className="text-sm font-semibold text-blue-900 mb-2">
-                  Ejemplos de preguntas:
+      {!isMinimized && (
+        <div className="flex-1 overflow-y-auto px-4 py-4">
+          {mensajes.length === 0 ? (
+            <div className="h-full flex items-center justify-center">
+              <div className="text-center max-w-md">
+                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-[#7762a3] to-[#9b87c9] rounded-full flex items-center justify-center">
+                  <span className="text-3xl">✨</span>
+                </div>
+                <h2 className="text-lg font-semibold text-gray-800 mb-2">
+                  ¡Hola! Soy FastAI
+                </h2>
+                <p className="text-sm text-gray-600 mb-4">
+                  Pregunta sobre tus documentos, búscalos por tema o solicita comparaciones entre ellos.
                 </p>
-                <ul className="text-sm text-blue-800 space-y-1">
-                  <li>• ¿Tengo documentos sobre poderes vehiculares?</li>
-                  <li>• ¿Qué tipos de contratos tengo?</li>
-                  <li>• Muéstrame documentos de compraventa</li>
-                  <li>• ¿Cuál poder usar para trámites ante MOPT?</li>
-                </ul>
+                <div className="bg-gradient-to-br from-purple-50 to-blue-50 border border-purple-200 rounded-xl p-4 text-left">
+                  <p className="text-xs font-semibold text-[#7762a3] mb-2">
+                    💡 Ejemplos de preguntas:
+                  </p>
+                  <ul className="text-xs text-gray-700 space-y-1.5">
+                    <li className="flex items-start gap-2">
+                      <span className="text-purple-400 mt-0.5">•</span>
+                      <span>¿Tengo documentos sobre poderes vehiculares?</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-purple-400 mt-0.5">•</span>
+                      <span>¿Qué tipos de contratos tengo?</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-purple-400 mt-0.5">•</span>
+                      <span>Muéstrame documentos de compraventa</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-purple-400 mt-0.5">•</span>
+                      <span>¿Cuál poder usar para trámites ante MOPT?</span>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
-        ) : (
-          <>
-            {mensajes.map((mensaje) => (
-              <ChatMessage key={mensaje.id} message={mensaje} />
-            ))}
-            <div ref={messagesEndRef} />
-          </>
-        )}
-      </div>
+          ) : (
+            <>
+              {mensajes.map((mensaje) => (
+                <ChatMessage key={mensaje.id} message={mensaje} />
+              ))}
+              <div ref={messagesEndRef} />
+            </>
+          )}
+        </div>
+      )}
 
       {/* Input */}
-      <ChatInput onSend={enviarMensaje} disabled={cargando} />
+      {!isMinimized && <ChatInput onSend={enviarMensaje} disabled={cargando} />}
     </div>
   );
 }
