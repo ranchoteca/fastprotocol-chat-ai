@@ -9,34 +9,6 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Mock de índice de documentos (después vendrá de Django)
-const MOCK_INDICE = `
-ID 1: Contrato_Compraventa_Inmueble.docx
-Tipo: Contrato
-Resumen: Contrato para transferencia de propiedades inmobiliarias. Incluye cláusulas de garantía, forma de pago, vicios ocultos y entrega del bien.
-Keywords: compraventa, inmueble, escritura, garantías
-
-ID 2: Poder_General_Notarial.docx
-Tipo: Poder
-Resumen: Poder amplio para representación legal en trámites diversos. Permite al apoderado actuar en nombre del otorgante.
-Keywords: poder, representación, trámites, legal
-
-ID 3: Poder_Especial_Vehiculos.docx
-Tipo: Poder
-Resumen: Poder específico para trámites vehiculares ante MOPT. Incluye traspasos, cambios de propietario y gestión de placas.
-Keywords: poder, vehículos, MOPT, traspaso, placas
-
-ID 4: Testamento_Abierto.docx
-Tipo: Testamento
-Resumen: Testamento abierto con disposiciones de bienes. Incluye herederos, legados y disposiciones finales.
-Keywords: testamento, herederos, legados, sucesión
-
-ID 5: Contrato_Arrendamiento.docx
-Tipo: Contrato
-Resumen: Contrato de arrendamiento de inmueble. Incluye cláusulas de pago, duración, obligaciones del arrendador y arrendatario.
-Keywords: arrendamiento, alquiler, renta, inmueble
-`;
-
 interface Message {
   role: 'user' | 'assistant' | 'system';
   content: string;
@@ -45,12 +17,72 @@ interface Message {
 export async function POST(req: NextRequest) {
   try {
     const { mensaje, historial } = await req.json();
+    const token = req.headers.get('authorization')?.replace('Bearer ', '');
 
     if (!mensaje || typeof mensaje !== 'string') {
       return NextResponse.json(
         { error: 'Mensaje inválido' },
         { status: 400 }
       );
+    }
+
+    if (!token) {
+      return NextResponse.json(
+        { error: 'No autenticado' },
+        { status: 401 }
+      );
+    }
+
+    // Obtener índice desde Django
+    const djangoApiUrl = process.env.NEXT_PUBLIC_DJANGO_API_URL || 'http://localhost:8000';
+    
+    let indice = '';
+    let documentosUsuario = [];
+    
+    try {
+      const contextResponse = await fetch(`${djangoApiUrl}/workspace/api/chat-context/`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        signal: AbortSignal.timeout(10000) // 10 segundos timeout
+      });
+
+      if (!contextResponse.ok) {
+        const errorData = await contextResponse.json().catch(() => ({}));
+        throw new Error(errorData.error || `Error ${contextResponse.status}`);
+      }
+
+      const contextData = await contextResponse.json();
+      
+      if (!contextData.success) {
+        throw new Error(contextData.error || 'Error obteniendo documentos');
+      }
+      
+      indice = contextData.indice;
+      documentosUsuario = contextData.documentos;
+      
+    } catch (error: any) {
+      console.error('Error obteniendo contexto de Django:', error);
+      
+      // Retornar error al usuario
+      return NextResponse.json({
+        error: 'No se pudo conectar con tu workspace',
+        details: error.message === 'signal timed out' 
+          ? 'El servidor tardó demasiado en responder. Por favor intenta de nuevo.'
+          : 'Hubo un problema al obtener tus documentos. Por favor intenta más tarde o contacta a soporte.',
+        retry: true
+      }, { status: 503 });
+    }
+    
+    // Verificar que hay documentos
+    if (!indice || documentosUsuario.length === 0) {
+      return NextResponse.json({
+        error: 'No tienes documentos analizados',
+        details: 'Sube documentos en tu workspace para poder usar el chat.',
+        retry: false
+      }, { status: 404 });
     }
 
     // Construir mensajes para OpenAI
@@ -60,7 +92,7 @@ export async function POST(req: NextRequest) {
         content: `Eres un asistente EXCLUSIVO del workspace de documentos legales para notarios.
 
 DOCUMENTOS DISPONIBLES:
-${MOCK_INDICE}
+${indice}
 
 INSTRUCCIONES:
 - SOLO responde preguntas sobre los documentos del workspace
@@ -91,12 +123,21 @@ INSTRUCCIONES:
 
     const respuesta = completion.choices[0].message.content || 'No pude generar una respuesta.';
 
-    // Procesar respuesta para agregar metadata de documentos mencionados
+    // Procesar respuesta para agregar links reales de Django
     const docsReferenciados = extraerDocumentosReferenciados(respuesta);
+    
+    // Enriquecer con URLs reales
+    const docsConUrls = docsReferenciados.map(doc => {
+      const docReal = documentosUsuario.find((d: any) => d.id === doc.id);
+      return {
+        ...doc,
+        url: docReal?.url || `#doc-${doc.id}`
+      };
+    });
 
     return NextResponse.json({
       respuesta,
-      documentos: docsReferenciados,
+      documentos: docsConUrls,
       usage: completion.usage
     });
 

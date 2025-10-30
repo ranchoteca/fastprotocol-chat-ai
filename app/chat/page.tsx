@@ -39,6 +39,18 @@ export default function ChatPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [mensajes]);
 
+  // Obtener token de URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    
+    if (token) {
+      localStorage.setItem('django_jwt', token);
+      // Limpiar URL
+      window.history.replaceState({}, '', '/chat');
+    }
+  }, []);
+
   const enviarMensaje = async (texto: string) => {
     // Agregar mensaje del usuario
     const mensajeUsuario: Message = {
@@ -52,11 +64,19 @@ export default function ChatPage() {
     setCargando(true);
 
     try {
+      // Obtener token
+      const token = localStorage.getItem('django_jwt');
+      
+      if (!token) {
+        throw new Error('No estás autenticado. Por favor inicia sesión en Django.');
+      }
+
       // Llamar a la API
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
           mensaje: texto,
@@ -72,6 +92,19 @@ export default function ChatPage() {
       }
 
       const data = await response.json();
+
+      // Manejar errores del servidor
+      if (data.error) {
+        const mensajeError: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: `❌ ${data.error}\n\n${data.details || ''}${data.retry ? '\n\nPor favor intenta de nuevo en unos momentos.' : ''}`,
+          timestamp: new Date()
+        };
+        setMensajes(prev => [...prev, mensajeError]);
+        setCargando(false);
+        return;
+      }
 
       // Agregar respuesta del asistente
       const mensajeAsistente: Message = {
