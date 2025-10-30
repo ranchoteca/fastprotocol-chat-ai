@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        signal: AbortSignal.timeout(10000) // 10 segundos timeout
+        signal: AbortSignal.timeout(30000)
       });
 
       if (!contextResponse.ok) {
@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
     const messages: Message[] = [
       {
         role: 'system',
-        content: `Eres un asistente EXCLUSIVO del workspace de documentos legales para notarios.
+        content: `Eres FastAI, un asistente EXCLUSIVO del workspace de documentos legales para notarios.
 
 DOCUMENTOS DISPONIBLES:
 ${indice}
@@ -101,7 +101,8 @@ INSTRUCCIONES:
 - Si te preguntan algo NO relacionado con el workspace, responde:
   "Solo puedo ayudarte con consultas sobre tus documentos del workspace. ¿Necesitas buscar algún machote?"
 - Para búsquedas, identifica los documentos relevantes por sus keywords y tipo
-- Sugiere cuál documento usar según la necesidad`
+- Sugiere cuál documento usar según la necesidad
+- Preséntate como FastAI si te preguntan quién eres`
       },
       ...historial.map((msg: any) => ({
         role: msg.role,

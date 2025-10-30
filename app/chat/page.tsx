@@ -136,10 +136,8 @@ export default function ChatPage() {
   };
 
   const limpiarChat = () => {
-    if (confirm('¿Estás seguro de que quieres limpiar el historial del chat?')) {
-      setMensajes([]);
-      localStorage.removeItem('chat_historial');
-    }
+    setMensajes([]);
+    localStorage.removeItem('chat_historial');
   };
 
   return (
