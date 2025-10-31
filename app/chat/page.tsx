@@ -9,7 +9,6 @@ import { Message } from '@/lib/types';
 export default function ChatPage() {
   const [mensajes, setMensajes] = useState<Message[]>([]);
   const [cargando, setCargando] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Cargar historial de localStorage al iniciar
@@ -159,24 +158,7 @@ export default function ChatPage() {
           </div>
         </div>
         
-        <div className="flex items-center gap-2">
-          {/* Botón minimizar/expandir */}
-          <button
-            onClick={() => setIsMinimized(!isMinimized)}
-            className="p-2 text-white hover:bg-white/20 rounded-lg transition-colors"
-            title={isMinimized ? "Expandir" : "Minimizar"}
-          >
-            {isMinimized ? (
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            ) : (
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-              </svg>
-            )}
-          </button>
-          
+        <div className="flex items-center gap-2">  
           {/* Botón limpiar */}
           <button
             onClick={limpiarChat}
@@ -196,8 +178,8 @@ export default function ChatPage() {
           {mensajes.length === 0 ? (
             <div className="h-full flex items-center justify-center">
               <div className="text-center max-w-md">
-                <div className="w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-[#7762a3] to-[#9b87c9] rounded-full flex items-center justify-center">
-                  <span className="text-2xl">✨</span>
+                <div className="w-10 h-10 mx-auto mb-3 bg-gradient-to-br from-[#7762a3] to-[#9b87c9] rounded-full flex items-center justify-center">
+                  <span className="text-xl">✨</span>
                 </div>
                 <h2 className="text-lg font-semibold text-gray-800 mb-2">
                   ¡Hola! Soy FastAI
