@@ -66,7 +66,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
         {/* Icono y rol */}
         <div className="flex items-center gap-2 mb-1">
           <span className="text-xs font-semibold opacity-70">
-            {isUser ? '👤 Tú' : '🤖 Asistente'}
+            {isUser ? '👤 Tú' : '🤖 FastAI'}
           </span>
           <span className="text-xs opacity-50">
             {new Date(message.timestamp).toLocaleTimeString('es-ES', {

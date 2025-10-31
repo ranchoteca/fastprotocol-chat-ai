@@ -41,7 +41,10 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
         <button
           onClick={handleSubmit}
           disabled={disabled || !mensaje.trim()}
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+          className="px-6 py-3 bg-purple-400 text-white rounded-lg font-medium 
+          hover:bg-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 
+          focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed 
+          transition-colors"
         >
           {disabled ? (
             <span className="flex items-center gap-2">
