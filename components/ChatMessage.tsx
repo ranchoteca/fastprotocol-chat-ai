@@ -59,7 +59,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
       <div
         className={`max-w-[85%] rounded-lg px-4 py-3 ${
           isUser
-            ? 'bg-blue-600 text-white'
+            ? 'bg-[#af99e1] text-white'
             : 'bg-gray-100 text-gray-900 border border-gray-200'
         }`}
       >

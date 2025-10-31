@@ -41,8 +41,8 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
         <button
           onClick={handleSubmit}
           disabled={disabled || !mensaje.trim()}
-          className="px-6 py-3 bg-purple-400 text-white rounded-lg font-medium 
-          hover:bg-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 
+          className="px-6 py-3 bg-[#846eb0] text-white rounded-lg font-medium 
+          hover:bg-[#9a86c4] focus:outline-none focus:ring-2 focus:ring-[#846eb0] 
           focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed 
           transition-colors"
         >
