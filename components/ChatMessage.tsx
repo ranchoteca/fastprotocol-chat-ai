@@ -28,14 +28,20 @@ export default function ChatMessage({ message }: ChatMessageProps) {
       // Link del documento
       const docId = match[1];
       const docNombre = match[2];
+
+      // Buscar el documento real en el array de documentos
+      const docUrl = message.documentos?.find(d => d.id === parseInt(docId))?.url;
+
       partes.push(
         <a
           key={`doc-${docId}-${match.index}`}
-          href={`#doc-${docId}`}
-          className="inline-flex items-center gap-1 px-2 py-1 mx-1 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded text-sm font-medium transition-colors"
-          title={`Ver ${docNombre}`}
+          href={docUrl || `https://fastprotocolcr.com/workspace/template/${docId}/`}
+          target="_blank"  // ← ABRIR EN NUEVA PESTAÑA
+          rel="noopener noreferrer"  // ← SEGURIDAD
+          className="inline-flex items-center gap-1 px-2 py-1 mx-1 bg-purple-100 hover:bg-purple-200 text-purple-800 rounded text-sm font-medium transition-colors"
+          title={`Abrir ${docNombre} en nueva pestaña`}
         >
-          👁️ {docNombre}
+          📄 {docNombre}
         </a>
       );
 

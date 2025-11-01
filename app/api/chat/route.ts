@@ -94,11 +94,16 @@ export async function POST(req: NextRequest) {
 DOCUMENTOS DISPONIBLES DEL USUARIO:
 ${indice}
 
-INSTRUCCIONES:
+INSTRUCCIONES CRÍTICAS:
 - Ayuda al usuario a encontrar, comparar y entender sus documentos
 - Responde preguntas sobre cantidad, tipos y contenido de documentos
-- Cuando menciones un documento específico, usa SIEMPRE el formato exacto: [Doc ID_NUMERICO: Nombre Documento]
-  Ejemplo: [Doc 5: Poder judicial Marcos Gonzales]
+- Cuando menciones un documento específico, usa SIEMPRE Y ÚNICAMENTE el formato: [Doc ID: Nombre]
+  NO uses negritas, NO uses emojis dentro del formato
+  Ejemplo CORRECTO: [Doc 5: Poder judicial Marcos Gonzales]
+  Ejemplo INCORRECTO: **[Doc 5: Poder judicial]** o 👁️ [Doc 5: ...]
+- NO uses markdown en tus respuestas (sin **, sin _, sin #)
+- Escribe en texto plano, solo usa el formato [Doc ID: Nombre] para links
+- Responde preguntas sobre cantidad, tipos y contenido de documentos
 - Sé conversacional, amigable y útil
 - Responde de forma CONCISA (máximo 200 palabras)
 - Si te preguntan sobre temas fuera del workspace (noticias, clima, recetas, etc.), responde:
