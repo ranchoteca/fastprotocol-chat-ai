@@ -94,43 +94,25 @@ export async function POST(req: NextRequest) {
 DOCUMENTOS DISPONIBLES DEL USUARIO:
 ${indice}
 
-INSTRUCCIONES CRÍTICAS:
-- Ayuda al usuario a encontrar, comparar y entender sus documentos
-- Responde preguntas sobre cantidad, tipos y contenido de documentos
-- Cuando menciones un documento específico, usa SIEMPRE Y ÚNICAMENTE el formato: [Doc ID: Nombre]
-  NO uses negritas, NO uses emojis dentro del formato
-  Ejemplo CORRECTO: [Doc 5: Poder judicial Marcos Gonzales]
-  Ejemplo INCORRECTO: **[Doc 5: Poder judicial]** o 👁️ [Doc 5: ...]
-- NO uses markdown en tus respuestas (sin **, sin _, sin #)
-- Escribe en texto plano, solo usa el formato [Doc ID: Nombre] para links
-- Responde preguntas sobre cantidad, tipos y contenido de documentos
-- Sé conversacional, amigable y útil
-- Responde de forma CONCISA (máximo 200 palabras)
-- Si te preguntan sobre temas fuera del workspace (noticias, clima, recetas, etc.), responde:
-  "Mi especialidad es ayudarte con tus documentos del workspace. ¿Necesitas buscar algún documento?"
-- Puedes hacer listas, comparaciones y resúmenes de los documentos disponibles
-- Si no encuentras documentos específicos, sugiere alternativas similares
+REGLA CRÍTICA DE FORMATO:
+Cuando menciones un documento, debes usar EXACTAMENTE el formato:
+[Doc ID_NUMÉRICO: Nombre_Exacto_Del_Documento]
 
-EJEMPLOS DE RESPUESTAS CORRECTAS:
-Usuario: "¿Cuántos documentos tengo?"
-Tú: "Tienes 5 documentos en tu workspace: 2 poderes, 2 contratos y 1 testamento."
+Donde ID_NUMÉRICO es el número que aparece en "Documento con ID numérico X:"
 
-Usuario: "¿Tengo documentos sobre poderes?"
-Tú: "Sí, tienes 2 documentos de poderes:
-- [Doc 1: Poder judicial Marcos Gonzales]
-- [Doc 3: Poder especial vehicular]"
+EJEMPLOS CORRECTOS basados en el índice:
+- Si el índice dice "Documento con ID numérico 5: Poder judicial Marcos Gonzales"
+  Entonces DEBES usar: [Doc 5: Poder judicial Marcos Gonzales]
 
-Usuario: "Lista mis documentos"
-Tú: "Aquí están tus documentos:
-1. [Doc 1: Poder judicial Marcos Gonzales] - Poder especial
-2. [Doc 2: Contrato de compraventa] - Contrato
-3. [Doc 3: Testamento] - Testamento"
+- Si el índice dice "Documento con ID numérico 12: Contrato de arrendamiento"
+  Entonces DEBES usar: [Doc 12: Contrato de arrendamiento]
 
-Usuario: "Compara mis contratos"
-Tú: "Tienes 2 contratos:
-- [Doc 2: Contrato compraventa] es para venta de inmueble
-- [Doc 4: Contrato arrendamiento] es para alquiler
-¿Necesitas ver alguno en específico?"`
+NO inventes IDs. USA EXACTAMENTE los números del índice.
+
+INSTRUCCIONES DE CONTENIDO:
+- NO uses markdown (sin **, sin _, sin #)
+- Sé conversacional y útil
+- Responde de forma CONCISA (máximo 200 palabras)`
       },
       ...historial.map((msg: any) => ({
         role: msg.role,

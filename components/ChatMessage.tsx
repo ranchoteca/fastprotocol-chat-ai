@@ -98,6 +98,8 @@ export default function ChatMessage({ message }: ChatMessageProps) {
                 <a
                   key={doc.id}
                   href={doc.url || `#doc-${doc.id}`}
+                  target="_blank" 
+                  rel="noopener noreferrer"
                   className="text-xs px-2 py-1 bg-white/20 hover:bg-white/30 rounded border border-white/30 transition-colors"
                 >
                   📄 {doc.nombre}
