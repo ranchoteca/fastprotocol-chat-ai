@@ -106,13 +106,14 @@ export default function ChatPage() {
         return;
       }
 
-      // Agregar respuesta del asistente
+      // Agregar respuesta del asistente CON todosDocumentos
       const mensajeAsistente: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: data.respuesta,
         timestamp: new Date(),
-        documentos: data.documentos
+        documentos: data.documentos,
+        todosDocumentos: data.todosDocumentos // ← INCLUIR TODOS LOS DOCUMENTOS
       };
 
       setMensajes(prev => [...prev, mensajeAsistente]);

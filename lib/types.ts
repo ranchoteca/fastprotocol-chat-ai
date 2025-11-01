@@ -6,6 +6,7 @@ export interface Message {
   content: string;
   timestamp: Date;
   documentos?: DocumentoRef[];
+  todosDocumentos?: DocumentoRef[]; // Array completo de documentos con URLs correctas
 }
 
 export interface DocumentoRef {
@@ -22,4 +23,5 @@ export interface ChatRequest {
 export interface ChatResponse {
   respuesta: string;
   documentos?: DocumentoRef[];
+  todosDocumentos?: DocumentoRef[];
 }
